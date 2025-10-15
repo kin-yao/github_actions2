@@ -1,0 +1,42 @@
+name: Dragon Generator 🐉
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  make-dragon:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Install cowsay
+      - name: Install cowsay
+        run: sudo apt-get update && sudo apt-get install -y cowsay
+
+      # Step 3: Generate dragon ASCII art and save to file
+      - name: Generate dragon ASCII art
+        run: cowsay -f dragon "Beware of the dragon!" > dragon.txt
+
+      # Step 4: Display the file content (for debugging)
+      - name: Show dragon.txt contents
+        run: cat dragon.txt
+
+      # Step 5: Check if the file exists
+      - name: Verify dragon.txt exists
+        run: |
+          if [ -f "dragon.txt" ]; then
+            echo "✅ dragon.txt exists!"
+          else
+            echo "❌ dragon.txt not found!" && exit 1
+          fi
+
+      # Optional: Upload as an artifact (so you can download it)
+      - name: Upload dragon file
+        uses: actions/upload-artifact@v4
+        with:
+          name: dragon-art
+          path: dragon.txt
